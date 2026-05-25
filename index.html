@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集團講師智庫中心 - HR 專屬管理平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            background-color: #F5F5DC; /* 米白暖色 */
+        }
+        /* 客製化卡片與內頁捲軸 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1ebd9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d4cbb3;
+            border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #b8ad93;
+        }
+    </style>
+</head>
+<body class="text-stone-800 min-h-screen flex flex-col selection:bg-amber-200 selection:text-stone-900">
+
+    <nav class="border-b border-stone-300/60 bg-white/70 backdrop-blur-md sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-amber-500 to-amber-700 p-2 rounded-lg text-white shadow-md shadow-amber-600/20">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold tracking-wider text-stone-900">集團講師智庫中心</span>
+                    <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">HR Internal</span>
+                </div>
+            </div>
+            <button onclick="openModal()" class="cursor-pointer flex items-center gap-2 bg-stone-900 hover:bg-stone-800 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-all duration-300 transform hover:-translate-y-0.5 text-sm">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>分享開課紀錄</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-stone-900 tracking-tight mb-2">智能講師與課程數據庫</h1>
+            <p class="text-stone-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                整合集團內各公司的培訓資源，即時串接雲端智庫。人資夥伴可在此快速檢索講師評價、歷年課程、參訓人數與學員滿意度，實現數據驅動的精準人才培訓。
+            </p>
+        </div>
+
+        <div class="bg-white/80 border border-stone-200 rounded-xl p-4 mb-8 shadow-sm">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full md:max-w-md">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-stone-400"></i>
+                    <input type="text" id="searchInput" oninput="filterCards()" placeholder="搜尋講師、課程類別、開課單位、關鍵字..." 
+                        class="w-full bg-stone-50 border border-stone-300 rounded-lg pl-11 pr-4 py-2 text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all duration-300 text-sm">
+                </div>
+                <div class="flex gap-6 text-xs sm:text-sm text-stone-500 w-full md:w-auto justify-end">
+                    <div>資料總筆數：<span id="totalCount" class="text-amber-700 font-bold text-base">0</span> 筆</div>
+                    <div>當前篩選：<span id="filterCount" class="text-stone-800 font-bold text-base">0</span> 筆</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingState" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="bg-white/50 border border-stone-200 rounded-xl animate-pulse aspect-square"></div>
+            <div class="bg-white/50 border border-stone-200 rounded-xl animate-pulse aspect-square"></div>
+            <div class="bg-white/50 border border-stone-200 rounded-xl animate-pulse aspect-square"></div>
+        </div>
+
+        <div id="noDataState" class="hidden text-center py-16 bg-white/40 border border-dashed border-stone-300 rounded-xl">
+            <i class="fa-regular fa-folder-open text-4xl text-stone-400 mb-3"></i>
+            <p class="text-stone-500">找不到符合搜尋條件的講師或課程紀錄</p>
+        </div>
+
+        <div id="cardContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden">
+            </div>
+
+    </main>
+
+    <footer class="border-t border-stone-200 bg-stone-100 py-4 text-center text-xs text-stone-500">
+        &copy; 2026 集團人資發展部 智慧智庫中心系統
+    </footer>
+
+    <div id="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white border border-stone-200 rounded-xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-2.5 text-amber-700">
+                    <i class="fa-solid fa-paper-plane text-lg"></i>
+                    <h3 class="text-lg font-bold text-stone-900">上報全新開課紀錄</h3>
+                </div>
+                <button onclick="closeModal()" class="cursor-pointer text-stone-400 hover:text-stone-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4 text-sm text-stone-600 leading-relaxed mb-6">
+                <p>為了確保資料庫的格式正確與安全性，系統已與現有的 Google 表單整合。</p>
+                <div class="bg-stone-50 p-3.5 rounded-lg border border-stone-200 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-600 mt-0.5"></i>
+                    <p class="text-xs text-stone-500">在表單填寫完送出後，資訊會自動匯入 Google 試算表後台。此網頁重新整理（F5）即可看到最新的智庫卡片！</p>
+                </div>
+            </div>
+
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd31bVge9Z9MjCd7-9d97oNLariDefpLnRGWT_Mm_X4vsSxBw/viewform?usp=publish-editor" target="_blank" class="block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md mb-3">
+                <i class="fa-solid fa-file-pen mr-2"></i>請點擊此處打開 Google 表單填寫新紀錄
+            </a>
+            
+            <button onclick="closeModal()" class="cursor-pointer w-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs py-2 rounded-lg transition-colors">
+                取消並返回網頁
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/1WU4oS8PNTziRGr27PuStirFV547BGX9nM6chvB8SuVI/gviz/tq?tqx=out:csv';
+        let allRecords = []; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
+
+        async function fetchData() {
+            try {
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error('網路回應不成功');
+                const csvText = await response.text();
+                
+                allRecords = parseCSV(csvText);
+                document.getElementById('totalCount').innerText = allRecords.length;
+                renderCards(allRecords);
+                
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('cardContainer').classList.remove('hidden');
+            } catch (error) {
+                console.error('抓取資料時發生錯誤:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-amber-800">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
+                        <p class="font-bold">無法讀取後台試算表資料</p>
+                        <p class="text-xs text-stone-500 mt-1">請確認您的 Google 試算表已開啟「知道連結的任何人都可以檢視」權限。</p>
+                    </div>
+                `;
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = []; let row = [""]; let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i]; const next = text[i+1];
+                if (c === '"') {
+                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; } 
+                    else { inQuotes = !inQuotes; }
+                } else if (c === ',' && !inQuotes) { row.push(''); } 
+                else if ((c === '\r' || c === '\n') && !inQuotes) {
+                    if (c === '\r' && next === '\n') { i++; }
+                    lines.push(row); row = [''];
+                } else { row[row.length - 1] += c; }
+            }
+            if (row.length > 1 || row[0] !== '') lines.push(row);
+            if (lines.length <= 1) return [];
+            lines.shift(); 
+            return lines.map(cols => {
+                return {
+                    company: cols[0] || '未填寫', department: cols[1] || '未填寫', year: cols[2] || '',             
+                    category: cols[3] || '未分類', courseName: cols[4] || '未填寫', target: cols[5] || '全員',        
+                    teacher: cols[6] || '不具名', consulting: cols[7] || '無', hours: cols[8] || '0',           
+                    students: cols[9] || '0', satisfaction: cols[10] || 'N/A', comment: cols[11] || '暫無回饋'   
+                };
+            });
+        }
+
+        function renderCards(data) {
+            const container = document.getElementById('cardContainer');
+            const noData = document.getElementById('noDataState');
+            document.getElementById('filterCount').innerText = data.length;
+
+            if (data.length === 0) {
+                container.classList.add('hidden');
+                noData.classList.remove('hidden');
+                return;
+            }
+
+            noData.classList.add('hidden');
+            container.classList.remove('hidden');
+
+            container.innerHTML = data.map(item => {
+                let satValue = parseFloat(item.satisfaction);
+                let satDisplay = isNaN(satValue) ? item.satisfaction : satValue.toFixed(2);
+
+                return `
+                    <div class="bg-white border border-stone-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:border-stone-300 transition-all duration-300 flex flex-col justify-between aspect-square overflow-hidden relative group">
+                        
+                        <div class="flex flex-col gap-1.5 overflow-hidden">
+                            <div class="flex items-start justify-between gap-1 text-[11px] text-stone-500 border-b border-stone-100 pb-1.5">
+                                <span class="font-bold text-stone-800">${item.year ? item.year + '年' : '未知年度'}</span>
+                                <span class="truncate max-w-[140px] text-right" title="${item.company} · ${item.department}">${item.company} | ${item.department}</span>
+                            </div>
+
+                            <h3 class="text-sm font-bold text-stone-900 line-clamp-2 mt-0.5 group-hover:text-amber-700 transition-colors" title="${item.courseName}">
+                                ${item.courseName}
+                            </h3>
+
+                            <div class="flex items-center justify-between bg-stone-50 rounded-md p-2 my-0.5 border border-stone-100">
+                                <div class="flex items-center gap-1 min-w-0">
+                                    <i class="fa-solid fa-user-tie text-[11px] text-amber-600 shrink-0"></i>
+                                    <span class="text-xs font-bold text-stone-800 truncate" title="${item.teacher}">${item.teacher}</span>
+                                </div>
+                                <div class="flex items-center gap-0.5 shrink-0 pl-1">
+                                    <i class="fa-solid fa-star text-amber-500 text-[10px]"></i>
+                                    <span class="text-xs font-bold text-amber-700">${satDisplay}</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[11px] text-stone-500">
+                                <div class="truncate">時數: <span class="text-stone-700 font-medium">${item.hours}h</span> · 人數: <span class="text-stone-700 font-medium">${item.students}人</span></div>
+                                <div class="truncate text-right">類別: <span class="text-stone-700 font-medium">${item.category}</span></div>
+                                <div class="truncate col-span-2">對象: <span class="text-stone-700 font-medium">${item.target}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 pt-1.5 border-t border-stone-100 flex flex-col gap-1 overflow-hidden h-[32%]">
+                            <div class="text-[10px] text-stone-400 truncate">
+                                合作管顧: <span class="text-stone-600 font-medium">${item.consulting}</span>
+                            </div>
+                            <div class="bg-stone-50/60 rounded p-1.5 border border-stone-100/50 flex-1 overflow-y-auto custom-scrollbar">
+                                <p class="text-[11px] text-stone-500 italic leading-snug">
+                                    ${item.comment}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 即時搜尋
+        function filterCards() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) { renderCards(allRecords); return; }
+            const filtered = allRecords.filter(item => {
+                return Object.values(item).some(val => String(val).toLowerCase().includes(query));
+            });
+            renderCards(filtered);
+        }
+
+        // Modal 控制
+        function openModal() {
+            const modal = document.getElementById('uploadModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modal.querySelector('div').classList.remove('scale-95'); }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('uploadModal');
+            modal.classList.add('opacity-0'); modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+    </script>
+</body>
+</html>
