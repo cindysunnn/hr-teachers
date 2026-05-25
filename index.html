@@ -12,7 +12,6 @@
             font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
             background-color: #F5F5DC; /* 米白暖色 */
         }
-        /* 客製化卡片與內頁捲軸 */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
@@ -50,24 +49,76 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         
-        <div class="mb-8">
+        <div class="mb-6">
             <h1 class="text-3xl font-bold text-stone-900 tracking-tight mb-2">智能講師與課程數據庫</h1>
             <p class="text-stone-600 max-w-3xl text-sm sm:text-base leading-relaxed">
                 整合集團內培訓記錄，人發夥伴可在此快速檢索歷年課程講師評價、參訓人數、學員層級與學員滿意度，實現數據驅動的精準人才培訓。
             </p>
         </div>
 
-        <div class="bg-white/80 border border-stone-200 rounded-xl p-4 mb-8 shadow-sm">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div class="bg-white/90 border border-stone-200 rounded-xl p-5 mb-8 shadow-sm space-y-4">
+            
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-stone-100 pb-4">
                 <div class="relative w-full md:max-w-md">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-stone-400"></i>
-                    <input type="text" id="searchInput" oninput="filterCards()" placeholder="搜尋講師、課程類別、開課單位、關鍵字..." 
+                    <input type="text" id="searchInput" oninput="applyAllFilters()" placeholder="輸入關鍵字（講師姓名、課程名稱、評語等）..." 
                         class="w-full bg-stone-50 border border-stone-300 rounded-lg pl-11 pr-4 py-2 text-stone-800 placeholder-stone-400 focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 transition-all duration-300 text-sm">
                 </div>
-                <div class="flex gap-6 text-xs sm:text-sm text-stone-500 w-full md:w-auto justify-end">
-                    <div>資料總筆數：<span id="totalCount" class="text-amber-700 font-bold text-base">0</span> 筆</div>
-                    <div>當前篩選：<span id="filterCount" class="text-stone-800 font-bold text-base">0</span> 筆</div>
+                <div class="flex gap-6 text-xs sm:text-sm text-stone-500 w-full md:w-auto justify-between md:justify-end items-center">
+                    <button onclick="resetFilters()" class="cursor-pointer text-xs text-amber-700 hover:text-amber-900 font-medium transition-colors flex items-center gap-1 bg-amber-50 px-2.5 py-1.5 rounded-md border border-amber-200/60">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> 重設所有條件
+                    </button>
+                    <div class="text-stone-600">
+                        當前篩選：<span id="filterCount" class="text-amber-700 font-bold text-base">0</span> / <span id="totalCount" class="text-stone-500 font-normal">0</span> 筆
+                    </div>
                 </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-regular fa-calendar text-[10px]"></i> 開課年度</label>
+                    <select id="filterYear" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
+                        <option value="">全部年度</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-building text-[10px]"></i> 開課公司</label>
+                    <select id="filterCompany" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
+                        <option value="">全部公司</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-tags text-[10px]"></i> 課程類別</label>
+                    <select id="filterCategory" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
+                        <option value="">全部類別</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-star text-[10px] text-amber-500"></i> 學員滿意度</label>
+                    <select id="filterSatisfaction" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
+                        <option value="">所有評分</option>
+                        <option value="4.9">9.8 分以上</option>
+                        <option value="4.8">9.5 分以上</option>
+                        <option value="4.5">9.0 分以上</option>
+                        <option value="4.0">8.5 分以上</option>
+                        <option value="4.0">8.0 分以上</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> 課程時數</label>
+                    <select id="filterHours" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
+                        <option value="">所有時數</option>
+                        <option value="short">3 小時(含)以下</option>
+                        <option value="medium">3.5 ~ 6 小時</option>
+                        <option value="long">6.5 小時以上</option>
+                    </select>
+                </div>
+
             </div>
         </div>
 
@@ -79,7 +130,8 @@
 
         <div id="noDataState" class="hidden text-center py-16 bg-white/40 border border-dashed border-stone-300 rounded-xl">
             <i class="fa-regular fa-folder-open text-4xl text-stone-400 mb-3"></i>
-            <p class="text-stone-500">找不到符合搜尋條件的講師或課程紀錄</p>
+            <p class="text-stone-500 font-medium">沒有找到符合當前複合條件的講師或課程紀錄</p>
+            <p class="text-xs text-stone-400 mt-1">您可以嘗試放寬或重設篩選標準</p>
         </div>
 
         <div id="cardContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden">
@@ -102,7 +154,6 @@
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            
             <div class="space-y-4 text-sm text-stone-600 leading-relaxed mb-6">
                 <p>為了確保資料庫的格式正確與安全性，系統已與現有的 Google 表單整合。</p>
                 <div class="bg-stone-50 p-3.5 rounded-lg border border-stone-200 flex items-start gap-3">
@@ -110,11 +161,9 @@
                     <p class="text-xs text-stone-500">在表單填寫完送出後，資訊會自動匯入 Google 試算表後台。此網頁重新整理（F5）即可看到最新的智庫卡片！</p>
                 </div>
             </div>
-
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSd31bVge9Z9MjCd7-9d97oNLariDefpLnRGWT_Mm_X4vsSxBw/viewform?usp=publish-editor" target="_blank" class="block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md mb-3">
                 <i class="fa-solid fa-file-pen mr-2"></i>請點擊此處打開 Google 表單填寫新紀錄
             </a>
-            
             <button onclick="closeModal()" class="cursor-pointer w-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs py-2 rounded-lg transition-colors">
                 取消並返回網頁
             </button>
@@ -136,6 +185,11 @@
                 const csvText = await response.text();
                 
                 allRecords = parseCSV(csvText);
+                
+                // 動態生成下拉選單的選項
+                populateSelectOptions();
+                
+                // 初始化統計數據並渲染
                 document.getElementById('totalCount').innerText = allRecords.length;
                 renderCards(allRecords);
                 
@@ -148,8 +202,7 @@
                         <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
                         <p class="font-bold">無法讀取後台試算表資料</p>
                         <p class="text-xs text-stone-500 mt-1">請確認您的 Google 試算表已開啟「知道連結的任何人都可以檢視」權限。</p>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
@@ -171,14 +224,112 @@
             lines.shift(); 
             return lines.map(cols => {
                 return {
-                    company: cols[0] || '未填寫', department: cols[1] || '未填寫', year: cols[2] || '',             
-                    category: cols[3] || '未分類', courseName: cols[4] || '未填寫', target: cols[5] || '全員',        
-                    teacher: cols[6] || '不具名', consulting: cols[7] || '無', hours: cols[8] || '0',           
-                    students: cols[9] || '0', satisfaction: cols[10] || 'N/A', comment: cols[11] || '暫無回饋'   
+                    company: cols[0] ? cols[0].trim() : '未填寫', 
+                    department: cols[1] ? cols[1].trim() : '未填寫',  
+                    year: cols[2] ? cols[2].trim() : '',             
+                    category: cols[3] ? cols[3].trim() : '未分類',    
+                    courseName: cols[4] ? cols[4].trim() : '未填寫',  
+                    target: cols[5] ? cols[5].trim() : '全員',        
+                    teacher: cols[6] ? cols[6].trim() : '不具名',     
+                    consulting: cols[7] ? cols[7].trim() : '無',      
+                    hours: cols[8] ? cols[8].trim() : '0',           
+                    students: cols[9] ? cols[9].trim() : '0',        
+                    satisfaction: cols[10] ? cols[10].trim() : 'N/A', 
+                    comment: cols[11] ? cols[11].trim() : '暫無回饋'   
                 };
             });
         }
 
+        // 自動從資料庫提取不重複的值填入下拉選單裡
+        function populateSelectOptions() {
+            const years = new Set();
+            const companies = new Set();
+            const categories = new Set();
+
+            allRecords.forEach(item => {
+                if(item.year) years.add(item.year);
+                if(item.company && item.company !== '未填寫') companies.add(item.company);
+                if(item.category && item.category !== '未分類') categories.add(item.category);
+            });
+
+            // 排序並填入選單
+            appendOptions('filterYear', Array.from(years).sort((a,b)=>b-a)); // 年度降序
+            appendOptions('filterCompany', Array.from(companies).sort());
+            appendOptions('filterCategory', Array.from(categories).sort());
+        }
+
+        function appendOptions(elementId, arrayData) {
+            const select = document.getElementById(elementId);
+            arrayData.forEach(value => {
+                const opt = document.createElement('option');
+                opt.value = value;
+                opt.innerHTML = value;
+                select.appendChild(opt);
+            });
+        }
+
+        // 核心邏輯：執行複合多維度篩選
+        function applyAllFilters() {
+            const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
+            const selYear = document.getElementById('filterYear').value;
+            const selCompany = document.getElementById('filterCompany').value;
+            const selCategory = document.getElementById('filterCategory').value;
+            const selSat = document.getElementById('filterSatisfaction').value;
+            const selHours = document.getElementById('filterHours').value;
+
+            const filteredData = allRecords.filter(item => {
+                // 1. 關鍵字模糊搜尋 (全欄位)
+                const matchesKeyword = !searchInput || Object.values(item).some(val => 
+                    String(val).toLowerCase().includes(searchInput)
+                );
+
+                // 2. 年度精密篩選
+                const matchesYear = !selYear || item.year === selYear;
+
+                // 3. 公司精密篩選
+                const matchesCompany = !selCompany || item.company === selCompany;
+
+                // 4. 類別精密篩選
+                const matchesCategory = !selCategory || item.category === selCategory;
+
+                // 5. 滿意度範圍篩選
+                let matchesSat = true;
+                if (selSat) {
+                    const val = parseFloat(item.satisfaction);
+                    matchesSat = !isNaN(val) && val >= parseFloat(selSat);
+                }
+
+                // 6. 時數區間篩選
+                let matchesHours = true;
+                if (selHours) {
+                    const hr = parseFloat(item.hours);
+                    if (!isNaN(hr)) {
+                        if (selHours === 'short') matchesHours = hr <= 3;
+                        else if (selHours === 'medium') matchesHours = hr > 3 && hr <= 6;
+                        else if (selHours === 'long') matchesHours = hr > 6;
+                    } else {
+                        matchesHours = false;
+                    }
+                }
+
+                return matchesKeyword && matchesYear && matchesCompany && matchesCategory && matchesSat && matchesHours;
+            });
+
+            renderCards(filteredData);
+        }
+
+        // 重設所有篩選器
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterYear').value = '';
+            document.getElementById('filterCompany').value = '';
+            document.getElementById('filterCategory').value = '';
+            document.getElementById('filterSatisfaction').value = '';
+            document.getElementById('filterHours').value = '';
+            renderCards(allRecords);
+        }
+
+        // 渲染卡片至 DOM
         function renderCards(data) {
             const container = document.getElementById('cardContainer');
             const noData = document.getElementById('noDataState');
@@ -242,16 +393,6 @@
                     </div>
                 `;
             }).join('');
-        }
-
-        // 即時搜尋
-        function filterCards() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            if (!query) { renderCards(allRecords); return; }
-            const filtered = allRecords.filter(item => {
-                return Object.values(item).some(val => String(val).toLowerCase().includes(query));
-            });
-            renderCards(filtered);
         }
 
         // Modal 控制
