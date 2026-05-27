@@ -27,7 +27,7 @@
         }
     </style>
 </head>
-<body class="text-stone-800 min-h-screen flex flex-col selection:bg-amber-200 selection:text-stone-900">
+<body class="text-stone-800 min-h-screen flex flex-col selection:bg-amber-200 selection:text-stone-900 relative">
 
     <nav class="border-b border-stone-300/60 bg-white/70 backdrop-blur-md sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -57,7 +57,6 @@
         </div>
 
         <div class="bg-white/90 border border-stone-200 rounded-xl p-5 mb-8 shadow-sm space-y-4">
-            
             <div class="flex flex-col md:flex-row gap-4 items-center justify-between border-b border-stone-100 pb-4">
                 <div class="flex items-center gap-2 w-full md:max-w-xl">
                     <div class="relative flex-1">
@@ -82,28 +81,24 @@
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-regular fa-calendar text-[10px]"></i> 開課年度</label>
                     <select id="filterYear" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
                         <option value="">全部年度</option>
                     </select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-building text-[10px]"></i> 開課公司</label>
                     <select id="filterCompany" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
                         <option value="">全部公司</option>
                     </select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-tags text-[10px]"></i> 課程類別</label>
                     <select id="filterCategory" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
                         <option value="">全部類別</option>
                     </select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-solid fa-star text-[10px] text-amber-500"></i> 學員滿意度</label>
                     <select id="filterSatisfaction" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
@@ -115,7 +110,6 @@
                         <option value="8.0">8.0 分以上</option>
                     </select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label class="text-xs font-semibold text-stone-600 flex items-center gap-1"><i class="fa-regular fa-clock text-[10px]"></i> 課程總時數</label>
                     <select id="filterHours" onchange="applyAllFilters()" class="w-full bg-stone-50 border border-stone-300 rounded-md py-1.5 px-2 text-xs text-stone-700 focus:outline-none focus:border-amber-600">
@@ -125,7 +119,6 @@
                         <option value="long">6.5 小時以上</option>
                     </select>
                 </div>
-
             </div>
         </div>
 
@@ -134,290 +127,8 @@
             <div class="bg-white/50 border border-stone-200 rounded-xl animate-pulse aspect-square"></div>
             <div class="bg-white/50 border border-stone-200 rounded-xl animate-pulse aspect-square"></div>
         </div>
-
         <div id="noDataState" class="hidden text-center py-16 bg-white/40 border border-dashed border-stone-300 rounded-xl">
             <i class="fa-regular fa-folder-open text-4xl text-stone-400 mb-3"></i>
             <p class="text-stone-500 font-medium">沒有找到符合當前複合條件的講師或課程紀錄</p>
-            <p class="text-xs text-stone-400 mt-1">您可以嘗試放寬或重設篩選標準</p>
         </div>
-
-        <div id="cardContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 hidden"></div>
-
-    </main>
-
-    <footer class="border-t border-stone-200 bg-stone-100 py-4 text-center text-xs text-stone-500">
-        &copy; 2026 和泰汽車管理部/人才發展室 智慧講師智庫中心
-    </footer>
-
-    <div id="uploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white border border-stone-200 rounded-xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="flex justify-between items-start mb-4">
-                <div class="flex items-center gap-2.5 text-amber-700">
-                    <i class="fa-solid fa-paper-plane text-lg"></i>
-                    <h3 class="text-lg font-bold text-stone-900">上報全新開課紀錄</h3>
-                </div>
-                <button onclick="closeModal()" class="cursor-pointer text-stone-400 hover:text-stone-600 transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <div class="space-y-4 text-sm text-stone-600 leading-relaxed mb-6">
-                <p>為了確保資料庫的格式正確與安全性，系統已與現有的 Google 表單整合。</p>
-                <div class="bg-stone-50 p-3.5 rounded-lg border border-stone-200 flex items-start gap-3">
-                    <i class="fa-solid fa-circle-info text-amber-600 mt-0.5"></i>
-                    <p class="text-xs text-stone-500">在表單填寫完送出後，資訊會自動匯入 Google 試算表後台。此網頁重新整理（F5）即可看到最新的智庫卡片！</p>
-                </div>
-            </div>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd31bVge9Z9MjCd7-9d97oNLariDefpLnRGWT_Mm_X4vsSxBw/viewform?usp=publish-editor" target="_blank" class="block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-md mb-3">
-                <i class="fa-solid fa-file-pen mr-2"></i>請點擊此處打開 Google 表單填寫新紀錄
-            </a>
-            <button onclick="closeModal()" class="cursor-pointer w-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs py-2 rounded-lg transition-colors">
-                取消並返回網頁
-            </button>
-        </div>
-    </div>
-
-    <script>
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/1WU4oS8PNTziRGr27PuStirFV547BGX9nM6chvB8SuVI/gviz/tq?tqx=out:csv';
-        let allRecords = []; 
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchData();
-            
-            // 綁定輸入框的 Enter 鍵偵聽器
-            document.getElementById('searchInput').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    applyAllFilters();
-                }
-            });
-        });
-
-        async function fetchData() {
-            try {
-                const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error('網路回應不成功');
-                const csvText = await response.text();
-                
-                allRecords = parseCSV(csvText);
-                
-                populateSelectOptions();
-                
-                document.getElementById('totalCount').innerText = allRecords.length;
-                renderCards(allRecords);
-                
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('cardContainer').classList.remove('hidden');
-            } catch (error) {
-                console.error('抓取資料時發生錯誤:', error);
-                document.getElementById('loadingState').innerHTML = `
-                    <div class="col-span-full text-center py-12 text-amber-800">
-                        <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
-                        <p class="font-bold">無法讀取後台試算表資料</p>
-                        <p class="text-xs text-stone-500 mt-1">請確認您的 Google 試算表已開啟「知道連結的任何人都可以檢視」權限。</p>
-                    </div>`;
-            }
-        }
-
-        function parseCSV(text) {
-            const lines = []; let row = [""]; let inQuotes = false;
-            for (let i = 0; i < text.length; i++) {
-                const c = text[i]; const next = text[i+1];
-                if (c === '"') {
-                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; } 
-                    else { inQuotes = !inQuotes; }
-                } else if (c === ',' && !inQuotes) { row.push(''); } 
-                else if ((c === '\r' || c === '\n') && !inQuotes) {
-                    if (c === '\r' && next === '\n') { i++; }
-                    lines.push(row); row = [''];
-                } else { row[row.length - 1] += c; }
-            }
-            if (row.length > 1 || row[0] !== '') lines.push(row);
-            if (lines.length <= 1) return [];
-            lines.shift(); 
-            
-            // 重要修正：將索引全部往後挪移一格 (cols[0] 為時間戳記，跳過不對齊網頁)
-            return lines.map(cols => {
-                return {
-                    company: cols[1] ? cols[1].trim() : '未填寫', 
-                    department: cols[2] ? cols[2].trim() : '未填寫',  
-                    year: cols[3] ? cols[3].trim() : '',             
-                    category: cols[4] ? cols[4].trim() : '未分類',    
-                    courseName: cols[5] ? cols[5].trim() : '未填寫',  
-                    target: cols[6] ? cols[6].trim() : '全員',        
-                    teacher: cols[7] ? cols[7].trim() : '不具名',     
-                    consulting: cols[8] ? cols[8].trim() : '無',      
-                    hours: cols[9] ? cols[9].trim() : '0',           
-                    students: cols[10] ? cols[10].trim() : '0',        
-                    satisfaction: cols[11] ? cols[11].trim() : 'N/A', 
-                    comment: cols[12] ? cols[12].trim() : '暫無回饋'   
-                };
-            });
-        }
-
-        function populateSelectOptions() {
-            const years = new Set();
-            const companies = new Set();
-            const categories = new Set();
-
-            allRecords.forEach(item => {
-                if(item.year) {
-                    const cleanYear = item.year.replace('年', '').trim();
-                    if(cleanYear) years.add(cleanYear);
-                }
-                if(item.company && item.company !== '未填寫') companies.add(item.company);
-                if(item.category && item.category !== '未分類') categories.add(item.category);
-            });
-
-            appendOptions('filterYear', Array.from(years).sort((a,b)=>b-a), true); 
-            appendOptions('filterCompany', Array.from(companies).sort(), false);
-            appendOptions('filterCategory', Array.from(categories).sort(), false);
-        }
-
-        function appendOptions(elementId, arrayData, isYear) {
-            const select = document.getElementById(elementId);
-            arrayData.forEach(value => {
-                const opt = document.createElement('option');
-                opt.value = value;
-                opt.innerHTML = isYear ? value + '年' : value;
-                select.appendChild(opt);
-            });
-        }
-
-        function applyAllFilters() {
-            const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
-            const selYear = document.getElementById('filterYear').value;
-            const selCompany = document.getElementById('filterCompany').value;
-            const selCategory = document.getElementById('filterCategory').value;
-            const selSat = document.getElementById('filterSatisfaction').value;
-            const selHours = document.getElementById('filterHours').value;
-
-            const filteredData = allRecords.filter(item => {
-                // 1. 關鍵字模糊搜尋
-                const matchesKeyword = !searchInput || Object.values(item).some(val => 
-                    String(val).toLowerCase().includes(searchInput)
-                );
-
-                // 2. 年度篩選
-                const itemYearClean = item.year.replace('年', '').trim();
-                const matchesYear = !selYear || itemYearClean === selYear;
-
-                // 3. 公司篩選
-                const matchesCompany = !selCompany || item.company === selCompany;
-
-                // 4. 類別篩選
-                const matchesCategory = !selCategory || item.category === selCategory;
-
-                // 5. 滿意度篩選 (10分制)
-                let matchesSat = true;
-                if (selSat) {
-                    const val = parseFloat(item.satisfaction);
-                    matchesSat = !isNaN(val) && val >= parseFloat(selSat);
-                }
-
-                // 6. 課程總時數區間篩選
-                let matchesHours = true;
-                if (selHours) {
-                    const hr = parseFloat(item.hours);
-                    if (!isNaN(hr)) {
-                        if (selHours === 'short') matchesHours = hr <= 3;
-                        else if (selHours === 'medium') matchesHours = hr > 3 && hr <= 6;
-                        else if (selHours === 'long') matchesHours = hr > 6;
-                    } else {
-                        matchesHours = false;
-                    }
-                }
-
-                return matchesKeyword && matchesYear && matchesCompany && matchesCategory && matchesSat && matchesHours;
-            });
-
-            renderCards(filteredData);
-        }
-
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('filterYear').value = '';
-            document.getElementById('filterCompany').value = '';
-            document.getElementById('filterCategory').value = '';
-            document.getElementById('filterSatisfaction').value = '';
-            document.getElementById('filterHours').value = '';
-            renderCards(allRecords);
-        }
-
-        function renderCards(data) {
-            const container = document.getElementById('cardContainer');
-            const noData = document.getElementById('noDataState');
-            document.getElementById('filterCount').innerText = data.length;
-
-            if (data.length === 0) {
-                container.classList.add('hidden');
-                noData.classList.remove('hidden');
-                return;
-            }
-
-            noData.classList.add('hidden');
-            container.classList.remove('hidden');
-
-            container.innerHTML = data.map(item => {
-                let satValue = parseFloat(item.satisfaction);
-                let satDisplay = isNaN(satValue) ? item.satisfaction : satValue.toFixed(1);
-
-                return `
-                    <div class="bg-white border border-stone-200 rounded-xl p-4 shadow-sm hover:shadow-md hover:border-stone-300 transition-all duration-300 flex flex-col justify-between aspect-square overflow-hidden relative group">
-                        
-                        <div class="flex flex-col gap-1.5 overflow-hidden">
-                            <div class="flex items-start justify-between gap-1 text-[11px] text-stone-500 border-b border-stone-100 pb-1.5">
-                                <span class="font-bold text-stone-800">${item.year ? (item.year.includes('年') ? item.year : item.year + '年') : '未知年度'}</span>
-                                <span class="truncate max-w-[140px] text-right" title="${item.company} · ${item.department}">${item.company} | ${item.department}</span>
-                            </div>
-
-                            <h3 class="text-sm font-bold text-stone-900 line-clamp-2 mt-0.5 group-hover:text-amber-700 transition-colors" title="${item.courseName}">
-                                ${item.courseName}
-                            </h3>
-
-                            <div class="flex items-center justify-between bg-stone-50 rounded-md p-2 my-0.5 border border-stone-100">
-                                <div class="flex items-center gap-1 min-w-0">
-                                    <i class="fa-solid fa-user-tie text-[11px] text-amber-600 shrink-0"></i>
-                                    <span class="text-xs font-bold text-stone-800 truncate" title="${item.teacher}">${item.teacher}</span>
-                                </div>
-                                <div class="flex items-center gap-0.5 shrink-0 pl-1">
-                                    <i class="fa-solid fa-star text-amber-500 text-[10px]"></i>
-                                    <span class="text-xs font-bold text-amber-700">${satDisplay}</span>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[11px] text-stone-500">
-                                <div class="truncate">時數: <span class="text-stone-700 font-medium">${item.hours}h</span> · 人數: <span class="text-stone-700 font-medium">${item.students}人</span></div>
-                                <div class="truncate text-right">類別: <span class="text-stone-700 font-medium">${item.category}</span></div>
-                                <div class="truncate col-span-2">對象: <span class="text-stone-700 font-medium">${item.target}</span></div>
-                            </div>
-                        </div>
-
-                        <div class="mt-2 pt-1.5 border-t border-stone-100 flex flex-col gap-1 overflow-hidden h-[32%]">
-                            <div class="text-[10px] text-stone-400 truncate">
-                                合作管顧: <span class="text-stone-600 font-medium">${item.consulting}</span>
-                            </div>
-                            <div class="bg-stone-50/60 rounded p-1.5 border border-stone-100/50 flex-1 overflow-y-auto custom-scrollbar">
-                                <p class="text-[11px] text-stone-500 italic leading-snug">
-                                    ${item.comment}
-                                </p>
-                            </div>
-                        </div>
-
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function openModal() {
-            const modal = document.getElementById('uploadModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); modal.querySelector('div').classList.remove('scale-95'); }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('uploadModal');
-            modal.classList.add('opacity-0'); modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
-    </script>
-</body>
-</html>
+        <div id="card
